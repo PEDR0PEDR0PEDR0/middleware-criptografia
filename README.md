@@ -1,4 +1,4 @@
-Middleware Web Service – Criptografia + XML + REST
+📘 Middleware Web Service – Criptografia + XML + REST
 
 Este projeto implementa um Middleware Web Service que funciona como intermediário entre:
 
@@ -8,7 +8,7 @@ Sistema legado interno (processa apenas XML)
 
 O objetivo é garantir segurança, tradução de formatos e isolamento arquitetural, conforme os requisitos do exercício baseado nos capítulos 9 e 13 do livro Sistemas Distribuídos — Colouris.
 
-   1. Funcionalidades do Middleware
+🚀 1. Funcionalidades do Middleware
 
 ✔ Expor uma API REST para clientes externos
 ✔ Converter JSON → XML e XML → JSON
@@ -17,7 +17,7 @@ O objetivo é garantir segurança, tradução de formatos e isolamento arquitetu
 ✔ Enviar e consumir XML simulando o sistema legado
 ✔ Devolver respostas organizadas em JSON
 
-   2. Arquitetura Geral
+🧱 2. Arquitetura Geral
 
 O projeto segue uma arquitetura em três camadas:
 
@@ -45,16 +45,19 @@ Retorna JSON ao cliente
 
 3. Sistema Legado Simulado
 
-Definido em legacy_system.py.
+Feito em legacy_system.py, que representa o processamento interno.
 
-   3. Tecnologias Utilizadas
+🛠️ 3. Tecnologias Utilizadas
 Tecnologia	Uso
 Python 3.x	Linguagem principal
 Flask	API REST
 PyCryptodome	Criptografia AES-256
 XML (ElementTree)	Manipulação de XML
 Postman/Insomnia	Testes de API
-   4. Instalação e Execução
+⚙️ 4. Instalação e Execução
+
+Certifique-se de que possui Python 3 instalado.
+
 ✔ 4.1 Instale as dependências
 pip install -r requirements.txt
 
@@ -66,14 +69,14 @@ A API ficará disponível em:
 
 http://127.0.0.1:5000/
 
-   5. Segurança e Criptografia
-✔ Algoritmo utilizado
+🔐 5. Segurança e Criptografia
+✔ Algoritmo
 
 AES-256
 
 Modo CBC
 
-IV aleatório gerado automaticamente
+IV aleatório por operação
 
 ✔ Chave de criptografia
 
@@ -81,64 +84,60 @@ Definida em config.py
 
 Armazenada em Base64
 
-Convertida para 32 bytes (padrão AES-256)
+Convertida para 32 bytes (requisito do AES-256)
 
 ✔ Dados criptografados
 
-Apenas o campo CPF
+Apenas CPF
 
-✔ Autenticação da API
+Aparece como Base64 no XML
 
-Enviar no header:
+✔ Autenticação
+
+A API exige o header:
 
 Authorization: my-secret-api-token-12345
 
 ✔ HTTPS
 
-Em produção, recomenda-se colocar o Middleware atrás de um Nginx/Apache fazendo o TLS termination, mantendo a comunicação segura.
+Em produção, o Middleware deve ficar atrás de um Nginx/Apache fazendo o TLS termination.
+A explicação está documentada no README conforme o requisito do exercício.
 
-   6. Endpoints da API
-🔹 POST /cliente (Cadastro)
-
+🌐 6. Endpoints da API
+🔹 POST /cliente – Cadastro
 URL
-
 POST http://127.0.0.1:5000/cliente
 
-
 Headers
-
 Authorization: my-secret-api-token-12345
 Content-Type: application/json
 
-
 Body
-
 {
   "nome": "João Silva",
   "cpf": "12345678900",
   "email": "joao@exemplo.com"
 }
 
-🔹 GET /cliente/{cpf_criptografado} (Consulta)
-
+🔹 GET /cliente/{cpf_criptografado} – Consulta
 URL
-
 GET http://127.0.0.1:5000/cliente/<cpf_criptografado>
 
-
 Header
-
 Authorization: my-secret-api-token-12345
 
-   7. Exemplos XML Utilizados
-✔ 7.1 XML — Requisição de Cadastro
+🧾 7. Estruturas XML Utilizadas
+✔ 7.1 XML – Requisição de Cadastro
 <CadastroCliente>
     <Nome>João Silva</Nome>
     <Email>joao.silva@exemplo.com</Email>
     <CPF_Criptografado>hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o=</CPF_Criptografado>
 </CadastroCliente>
 
-✔ 7.2 XML — Resposta de Consulta
+✔ 7.2 XML – Resposta de Consulta
+
+(Exemplo gerado pelo legado)
+
 <ClienteInfo>
     <Nome>João Silva</Nome>
     <Email>joao.silva@exemplo.com</Email>
@@ -146,34 +145,28 @@ Authorization: my-secret-api-token-12345
 </ClienteInfo>
 
 
-Arquivos incluídos:
+Arquivos incluídos no repositório:
 
 requisicao_cadastro.xml
 
 resposta_consulta.xml
 
-   8. Coleção Postman/Insomnia
+📦 8. Coleção Postman/Insomnia
 
-Este repositório inclui:
+Incluída no repositório:
 
 Middleware_Criptografia_Colecao.json
 
 
-O arquivo contém:
+Atende ao requisito do exercício:
 
-Requisição de cadastro
+Contém a requisição de cadastro
 
-Requisição de consulta
+Contém a requisição de consulta
 
-Headers
+Exibe as respostas da API
 
-Body
-
-Respostas da API
-
-Cumpre o requisito do exercício.
-
-   9. Estrutura do Projeto
+📁 9. Estrutura do Projeto
 middleware-criptografia/
 │   app.py
 │   config.py
@@ -184,11 +177,11 @@ middleware-criptografia/
 │   resposta_consulta.xml
 │   Middleware_Criptografia_Colecao.json
 │
-└── services/
-      ├── crypto_service.py
-      └── xml_service.py
+├── services/
+│     ├── crypto_service.py
+│     └── xml_service.py
 
-   10. Testes
+🧪 10. Testes
 
 Use ferramentas como:
 
@@ -198,30 +191,30 @@ Insomnia
 
 cURL
 
-A coleção Postman exportada facilita a execução automática.
+A coleção exportada facilita a reprodução dos testes.
 
-   11. Referências
+📚 11. Referências
 
-Sistemas Distribuídos — Colouris (capítulos 9 e 13)
+Sistemas Distribuídos — Colouris, capítulos 9 e 13
 
 Documentação Flask
 
 Documentação PyCryptodome
 
-  12. Conclusão
+✔️ 12. Conclusão
 
-Este Middleware implementa:
+Este Middleware implementa todos os requisitos do exercício:
 
 API REST funcional
 
-Conversão completa JSON ↔ XML
+Conversão JSON ↔ XML
 
-Criptografia AES-256 de dados sensíveis
+Criptografia AES-256
 
-Autenticação via Token
+Autenticação por Token
 
-Sistema legado simulado
+Simulação de sistema legado
 
-XMLs de requisição e resposta
+Dois exemplos XML
 
-Exportação Postman incluída
+Exportação Postman
