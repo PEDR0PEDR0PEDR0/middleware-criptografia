@@ -1,98 +1,117 @@
-Middleware Web Service – Criptografia AES + XML + REST
-
+Middleware Web Service – Criptografia + XML + REST
 
 Este projeto implementa um Middleware Web Service que funciona como intermediário entre:
 
-Clientes externos (JSON/REST)
+Clientes externos (aplicações web/mobile usando JSON via REST)
 
-Sistema legado interno (XML)
+Sistema legado interno (processa apenas XML)
 
-O middleware:
+O objetivo é garantir segurança, tradução de formatos e isolamento arquitetural, conforme os requisitos do exercício baseado nos capítulos 9 e 13 do livro Sistemas Distribuídos — Colouris.
 
-Converte JSON para XML e XML para JSON,
+   1. Funcionalidades do Middleware
 
-Aplica criptografia AES-256,
+✔ Expor uma API REST para clientes externos
+✔ Converter JSON → XML e XML → JSON
+✔ Criptografar dados sensíveis (CPF) usando AES-256 CBC
+✔ Autenticação por Token no cabeçalho
+✔ Enviar e consumir XML simulando o sistema legado
+✔ Devolver respostas organizadas em JSON
 
-Implementa autenticação por token,
+   2. Arquitetura Geral
 
-Simula comunicação com um sistema legado.
+O projeto segue uma arquitetura em três camadas:
 
-O projeto cumpre todos os requisitos definidos pelo exercício baseado nos capítulos 9 e 13 do livro "Sistemas Distribuídos – Colouris".
+1. Cliente Externo
 
-2. Arquitetura do Sistema
-Cliente Externo (JSON/REST)
-            ↓
-   Middleware Flask
- → Valida requisição
- → Converte JSON → XML
- → Criptografa CPF
- → Envia ao Sistema Legado
- → Recebe XML criptografado
- → Descriptografa
- → Retorna JSON
-            ↓
-Sistema Legado Simulado (XML)
+Simulado via Postman/Insomnia usando JSON.
 
-3. Tecnologias Utilizadas
-Tecnologia	Descrição
+2. Middleware (API REST) – este projeto
+
+Recebe JSON
+
+Valida os dados
+
+Converte para XML
+
+Criptografa informações sensíveis
+
+Envia para o legado
+
+Recebe XML criptografado
+
+Descriptografa
+
+Retorna JSON ao cliente
+
+3. Sistema Legado Simulado
+
+Definido em legacy_system.py.
+
+   3. Tecnologias Utilizadas
+Tecnologia	Uso
 Python 3.x	Linguagem principal
 Flask	API REST
 PyCryptodome	Criptografia AES-256
 XML (ElementTree)	Manipulação de XML
-Postman / Insomnia	Testes de API
-4. Como Executar
-
-Instale as dependências:
-
+Postman/Insomnia	Testes de API
+   4. Instalação e Execução
+✔ 4.1 Instale as dependências
 pip install -r requirements.txt
 
-
-Execute o servidor:
-
+✔ 4.2 Execute o servidor
 python app.py
 
 
-A API estará disponível em:
+A API ficará disponível em:
 
 http://127.0.0.1:5000/
 
-5. Segurança e Criptografia
+   5. Segurança e Criptografia
+✔ Algoritmo utilizado
 
-Algoritmo utilizado:
+AES-256
 
-AES-256, modo CBC
+Modo CBC
 
-IV gerado automaticamente
+IV aleatório gerado automaticamente
 
-Chave:
+✔ Chave de criptografia
 
 Definida em config.py
 
 Armazenada em Base64
 
-Convertida para 32 bytes conforme especificação do AES-256
+Convertida para 32 bytes (padrão AES-256)
 
-Dados criptografados:
+✔ Dados criptografados
 
-Campo CPF
+Apenas o campo CPF
 
-Autenticação da API (obrigatória):
+✔ Autenticação da API
+
+Enviar no header:
 
 Authorization: my-secret-api-token-12345
 
+✔ HTTPS
 
-HTTPS:
-Em produção, recomenda-se que o middleware opere atrás de um servidor como NGINX ou Apache, que realiza o TLS termination.
+Em produção, recomenda-se colocar o Middleware atrás de um Nginx/Apache fazendo o TLS termination, mantendo a comunicação segura.
 
-6. Endpoints da API
-POST /cliente
+   6. Endpoints da API
+🔹 POST /cliente (Cadastro)
 
-URL:
+URL
 
-http://127.0.0.1:5000/cliente
+POST http://127.0.0.1:5000/cliente
 
 
-Body:
+Headers
+
+Authorization: my-secret-api-token-12345
+Content-Type: application/json
+
+
+Body
 
 {
   "nome": "João Silva",
@@ -100,49 +119,61 @@ Body:
   "email": "joao@exemplo.com"
 }
 
-GET /cliente/{cpf_criptografado}
+🔹 GET /cliente/{cpf_criptografado} (Consulta)
 
-Exemplo:
+URL
 
-http://127.0.0.1:5000/cliente/hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o=
+GET http://127.0.0.1:5000/cliente/<cpf_criptografado>
 
-7. Estruturas XML
-XML – Requisição de Cadastro
+
+Header
+
+Authorization: my-secret-api-token-12345
+
+   7. Exemplos XML Utilizados
+✔ 7.1 XML — Requisição de Cadastro
 <CadastroCliente>
     <Nome>João Silva</Nome>
     <Email>joao.silva@exemplo.com</Email>
-    <CPF_Criptografado>...</CPF_Criptografado>
+    <CPF_Criptografado>hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o=</CPF_Criptografado>
 </CadastroCliente>
 
-XML – Resposta de Consulta
+✔ 7.2 XML — Resposta de Consulta
 <ClienteInfo>
     <Nome>João Silva</Nome>
     <Email>joao.silva@exemplo.com</Email>
     <CPF>12345678900</CPF>
 </ClienteInfo>
 
-8. Coleção Postman
 
-Incluída no repositório:
+Arquivos incluídos:
+
+requisicao_cadastro.xml
+
+resposta_consulta.xml
+
+   8. Coleção Postman/Insomnia
+
+Este repositório inclui:
 
 Middleware_Criptografia_Colecao.json
 
 
-A coleção contém:
+O arquivo contém:
 
-Requisição de cadastro,
+Requisição de cadastro
 
-Requisição de consulta,
+Requisição de consulta
 
-Headers,
+Headers
 
-Bodies,
+Body
 
-Respostas da API.
+Respostas da API
 
-Atende ao requisito do exercício.
+Cumpre o requisito do exercício.
 
-9. Estrutura do Projeto
+   9. Estrutura do Projeto
 middleware-criptografia/
 │   app.py
 │   config.py
@@ -157,9 +188,9 @@ middleware-criptografia/
       ├── crypto_service.py
       └── xml_service.py
 
-10. Testes
+   10. Testes
 
-Ferramentas recomendadas:
+Use ferramentas como:
 
 Postman
 
@@ -167,30 +198,30 @@ Insomnia
 
 cURL
 
-O repositório inclui a coleção Postman para facilitar os testes.
+A coleção Postman exportada facilita a execução automática.
 
-11. Referências
+   11. Referências
 
-Sistemas Distribuídos – Colouris
+Sistemas Distribuídos — Colouris (capítulos 9 e 13)
 
 Documentação Flask
 
 Documentação PyCryptodome
 
-12. Conclusão
+  12. Conclusão
 
-O Middleware cumpre integralmente os requisitos do exercício, incluindo:
+Este Middleware implementa:
 
 API REST funcional
 
-Conversão JSON ↔ XML
+Conversão completa JSON ↔ XML
 
-Criptografia AES-256
+Criptografia AES-256 de dados sensíveis
 
-Autenticação via token
+Autenticação via Token
 
-Simulação de sistema legado
+Sistema legado simulado
 
-Exemplos de XML
+XMLs de requisição e resposta
 
-Coleção Postman
+Exportação Postman incluída
