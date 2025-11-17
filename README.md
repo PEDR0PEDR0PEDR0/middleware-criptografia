@@ -1,198 +1,196 @@
-# Middleware Web Service com Criptografia e Integração XML
+Middleware Web Service – Criptografia AES + XML + REST
 
-## 1. Descrição do Projeto
 
-Este projeto implementa um **Middleware Web Service** baseado em **Python + Flask**, funcionando como uma camada intermediária entre:
+Este projeto implementa um Middleware Web Service que funciona como intermediário entre:
 
-* **Clientes Externos (Web/Mobile via JSON/REST)**
-* **Sistema Legado Interno (XML)**
+Clientes externos (JSON/REST)
 
-O Middleware garante **segurança**, **compatibilidade** e **isolamento**, atendendo aos requisitos de uma arquitetura distribuída conforme os capítulos 9 e 13 do livro *Sistemas Distribuídos – Colouris*.
+Sistema legado interno (XML)
 
-### Funções principais
+O middleware:
 
-1. **API REST** para comunicação com clientes externos.
-2. **Conversão JSON ↔ XML** entre cliente e sistema legado.
-3. **Criptografia AES-256** do campo **CPF**.
-4. **Autenticação via Token**.
-5. **Encapsulamento** e **proteção** do sistema legado.
+Converte JSON para XML e XML para JSON,
 
----
+Aplica criptografia AES-256,
 
-## 2. Tecnologias Utilizadas
+Implementa autenticação por token,
 
-* **Python 3.x**
-* **Flask (framework web)**
-* **PyCryptodome (biblioteca Crypto)** para criptografia AES
-* Manipulação de **XML** usando `xml.etree.ElementTree`
+Simula comunicação com um sistema legado.
 
----
+O projeto cumpre todos os requisitos definidos pelo exercício baseado nos capítulos 9 e 13 do livro "Sistemas Distribuídos – Colouris".
 
-## 3. Configuração e Execução
+2. Arquitetura do Sistema
+Cliente Externo (JSON/REST)
+            ↓
+   Middleware Flask
+ → Valida requisição
+ → Converte JSON → XML
+ → Criptografa CPF
+ → Envia ao Sistema Legado
+ → Recebe XML criptografado
+ → Descriptografa
+ → Retorna JSON
+            ↓
+Sistema Legado Simulado (XML)
 
-### 3.1 Pré-requisitos
+3. Tecnologias Utilizadas
+Tecnologia	Descrição
+Python 3.x	Linguagem principal
+Flask	API REST
+PyCryptodome	Criptografia AES-256
+XML (ElementTree)	Manipulação de XML
+Postman / Insomnia	Testes de API
+4. Como Executar
 
-* Python 3 instalado
+Instale as dependências:
 
-### 3.2 Instalar dependências
-
-Você pode usar o arquivo `requirements.txt`:
-
-```bash
 pip install -r requirements.txt
-```
 
-Ou instalar manualmente:
 
-```bash
-pip install Flask pycryptodome
-```
+Execute o servidor:
 
-### 3.3 Executar o servidor
-
-```bash
 python app.py
-```
 
-Servidor disponível em:
 
-```
+A API estará disponível em:
+
 http://127.0.0.1:5000/
-```
 
----
+5. Segurança e Criptografia
 
-## 4. Segurança e Criptografia
+Algoritmo utilizado:
 
-### 4.1 Autenticação via Token
+AES-256, modo CBC
 
-* Todas as requisições passam por um `@app.before_request`.
-* O token é verificado contra o valor definido em **config.py**.
-* Cabeçalho obrigatório:
+IV gerado automaticamente
 
-```
-Authorization: Bearer <TOKEN>
-```
+Chave:
 
-### 4.2 Criptografia do CPF
+Definida em config.py
 
-* Algoritmo: **AES-256 (CBC)**
-* Apenas o **CPF** é criptografado.
-* A chave é armazenada em **Base64** em `config.py`.
-* No módulo `crypto_service.py`, a chave é decodificada para **32 bytes**, garantindo compatibilidade com o AES-256.
+Armazenada em Base64
 
-### 4.3 HTTPS (Ambiente Real)
+Convertida para 32 bytes conforme especificação do AES-256
 
-Em produção:
+Dados criptografados:
 
-* O Middleware opera atrás de um **Proxy Reverso** (NGINX/Apache).
-* O proxy faz o **TLS Termination**, garantindo comunicação segura para o cliente externo.
-* O tráfego entre Proxy ↔ Middleware pode ser interno (rede privada).
+Campo CPF
 
----
+Autenticação da API (obrigatória):
 
-## 5. Exemplos de Requisições
-
-### 5.1 POST /cliente — Cadastro
-
-**Objetivo:** Cadastrar um novo cliente
-
-**URL:**
-
-```
-POST http://127.0.0.1:5000/cliente
-```
-
-**Headers:**
-
-```
 Authorization: my-secret-api-token-12345
-Content-Type: application/json
-```
 
-**Body (JSON):**
 
-```json
+HTTPS:
+Em produção, recomenda-se que o middleware opere atrás de um servidor como NGINX ou Apache, que realiza o TLS termination.
+
+6. Endpoints da API
+POST /cliente
+
+URL:
+
+http://127.0.0.1:5000/cliente
+
+
+Body:
+
 {
   "nome": "João Silva",
   "cpf": "12345678900",
-  "email": "joao.silva@exemplo.com"
+  "email": "joao@exemplo.com"
 }
-```
 
----
+GET /cliente/{cpf_criptografado}
 
-### 5.2 GET /cliente/{cpf_criptografado}
+Exemplo:
 
-**Objetivo:** Consultar cliente pelo CPF criptografado
+http://127.0.0.1:5000/cliente/hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o=
 
-**Exemplo de URL:**
-
-```
-GET http://127.0.0.1:5000/cliente/hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o=
-```
-
-**Header:**
-
-```
-Authorization: my-secret-api-token-12345
-```
-
-**Body:** vazio
-
----
-
-## 📜6. Estruturas XML (Exemplos)
-
-Os arquivos XML foram disponibilizados também como:
-
-* `xml_requisicao_cadastro.xml`
-* `xml_resposta_consulta.xml`
-
-### 6.1 XML de Requisição (Cadastro)
-
-```xml
+7. Estruturas XML
+XML – Requisição de Cadastro
 <CadastroCliente>
     <Nome>João Silva</Nome>
     <Email>joao.silva@exemplo.com</Email>
-    <CPF_Criptografado>hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o=</CPF_Criptografado>
+    <CPF_Criptografado>...</CPF_Criptografado>
 </CadastroCliente>
-```
 
----
+XML – Resposta de Consulta
+<ClienteInfo>
+    <Nome>João Silva</Nome>
+    <Email>joao.silva@exemplo.com</Email>
+    <CPF>12345678900</CPF>
+</ClienteInfo>
 
-##  7. Estrutura de Pastas
+8. Coleção Postman
 
-```
-middleware-project/
+Incluída no repositório:
+
+Middleware_Criptografia_Colecao.json
+
+
+A coleção contém:
+
+Requisição de cadastro,
+
+Requisição de consulta,
+
+Headers,
+
+Bodies,
+
+Respostas da API.
+
+Atende ao requisito do exercício.
+
+9. Estrutura do Projeto
+middleware-criptografia/
 │   app.py
 │   config.py
-│   crypto_service.py
+│   legacy_system.py
 │   requirements.txt
 │   README.md
+│   requisicao_cadastro.xml
+│   resposta_consulta.xml
+│   Middleware_Criptografia_Colecao.json
 │
-├── xml_examples/
-│     ├── xml_requisicao_cadastro.xml
-│     └── xml_resposta_consulta.xml
-```
+└── services/
+      ├── crypto_service.py
+      └── xml_service.py
 
----
+10. Testes
 
-##  8. Testes
+Ferramentas recomendadas:
 
-* Teste com ferramentas como: **Postman**, **Insomnia**, **cURL**.
-* Valide a criptografia testando `/cliente` → `/cliente/{cpf}`.
+Postman
 
----
+Insomnia
 
-##  9. Referências
+cURL
 
-* *Sistemas Distribuídos — Colouris*, Capítulos 9 e 13
-* Documentação Flask
-* Documentação PyCryptodome
+O repositório inclui a coleção Postman para facilitar os testes.
 
----
+11. Referências
 
-##  10. Conclusão
+Sistemas Distribuídos – Colouris
 
-Este Middleware implementa segurança, interoperabilidade e isolamento, garantindo comunicação segura entre clientes modernos e sistemas legados baseados em XML, com criptografia robusta e arquitetura distribuída adequada.
+Documentação Flask
+
+Documentação PyCryptodome
+
+12. Conclusão
+
+O Middleware cumpre integralmente os requisitos do exercício, incluindo:
+
+API REST funcional
+
+Conversão JSON ↔ XML
+
+Criptografia AES-256
+
+Autenticação via token
+
+Simulação de sistema legado
+
+Exemplos de XML
+
+Coleção Postman
