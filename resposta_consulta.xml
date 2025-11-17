@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RespostaCliente>
+    <Nome>Pedro Consultador</Nome>
+    <Email>simulado@legado.com</Email>
+    <CPF_Criptografado>hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o=</CPF_Criptografado>
+    <Status>Ativo</Status>
+</RespostaCliente>

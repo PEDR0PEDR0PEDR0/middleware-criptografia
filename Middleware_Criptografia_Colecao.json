@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "51971a60-900d-4876-b8a7-4185bd69435e",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39136564"
+	},
+	"item": [
+		{
+			"name": "http://127.0.0.1:5000/cliente",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "my-secret-api-token-12345",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nome\": \"João Silva\",\r\n    \"cpf\": \"12345678900\",\r\n    \"email\": \"joao@exemplo.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/cliente",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"cliente"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:5000/cliente/hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o=",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "my-secret-api-token-12345",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:5000/cliente/hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o=",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"cliente",
+						"hx5IIrLVq42KbXWDcPWvLCqt8nvDeuLRKKlnvbrtQ3o="
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

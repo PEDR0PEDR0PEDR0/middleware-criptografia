@@ -1,0 +1,5 @@
+Flask
+pycryptodome
+# Opcional: dependendo de como você implementou os serviços XML
+# xmltodict
+# lxml
